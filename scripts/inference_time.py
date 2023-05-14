@@ -52,4 +52,5 @@ for device in devices:
 
             })
 
-    pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_{device}.csv')
+        del model
+        pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_{device}.csv')
