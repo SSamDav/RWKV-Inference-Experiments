@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, RwkvForCausalLM
 
 DATA_PATH = Path(__file__).parent / '../data'
 
-devices = ['cpu', 'gpu']
+devices = ['cuda', 'cpu']
 models = [
     "EleutherAI/pythia-160m",
     "EleutherAI/gpt-neo-125m",
@@ -43,12 +43,13 @@ for device in devices:
             data.append({
                 "model": model_name,
                 "model_size": model_size,
-                'device': device,
-                'cpu_time': full_profile.cpu_time,
-                'cuda_time': full_profile.cuda_time,
-                'cpu_memory_usage': full_profile.cpu_memory_usage,
-                'cuda_memory_usage': full_profile.cuda_memory_usage
+                "num_tokens": num_tokens,
+                "device": device,
+                "cpu_time": full_profile.cpu_time,
+                "cuda_time": full_profile.cuda_time,
+                "cpu_memory_usage": full_profile.cpu_memory_usage,
+                "cuda_memory_usage": full_profile.cuda_memory_usage
 
             })
 
-pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_{device}.csv')
+    pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_{device}.csv')
