@@ -1,8 +1,9 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer, RwkvForCausalLM
-from tqdm.auto import tqdm
 from pathlib import Path
+
 import pandas as pd
-import time
+from torch.profiler import ProfilerActivity, profile, record_function
+from tqdm.auto import tqdm
+from transformers import AutoModelForCausalLM, AutoTokenizer, RwkvForCausalLM
 
 DATA_PATH = Path(__file__).parent / '../data'
 
@@ -34,14 +35,20 @@ for device in devices:
         tokenized_prompt = {k: v.to(device) for k, v in tokenized_prompt.items()}
 
         for _ in range(num_samples):
-            start_time = time.time()
-            tokens = model.generate(**tokenized_prompt, max_new_tokens=num_tokens, do_sample=True)
-            total_time = time.time() - start_time
+            with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], profile_memory=True, record_shapes=False) as prof:
+                with record_function("model_inference"):
+                    tokens = model.generate(**tokenized_prompt, max_new_tokens=num_tokens, do_sample=True)
+
+            full_profile = next(event for event in prof.key_averages() if event.key == 'model_inference')
             data.append({
                 "model": model_name,
                 "model_size": model_size,
                 'device': device,
-                'total_time': total_time
+                'cpu_time': full_profile.cpu_time,
+                'cuda_time': full_profile.cuda_time,
+                'cpu_memory_usage': full_profile.cpu_memory_usage,
+                'cuda_memory_usage': full_profile.cuda_memory_usage
+
             })
 
 pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_{device}.csv')
