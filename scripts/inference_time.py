@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, RwkvForCausalLM
 
 DATA_PATH = Path(__file__).parent / '../data'
 
-devices = ['cuda', 'cpu']
+devices = ['cpu', 'cuda']
 models = [
     "EleutherAI/pythia-160m",
     "EleutherAI/gpt-neo-125m",

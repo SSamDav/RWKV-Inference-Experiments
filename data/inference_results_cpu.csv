@@ -1,0 +1,9 @@
+,model,model_size,num_tokens,device,cpu_time,cuda_time,cpu_memory_usage,cuda_memory_usage
+0,EleutherAI/pythia-160m,162322944,100,cpu,1485365.0,0.0,1128,0
+1,EleutherAI/gpt-neo-125m,125198592,100,cpu,1165314.0,0.0,0,0
+2,facebook/opt-125m,125239296,100,cpu,1059580.0,0.0,8,0
+3,RWKV/rwkv-4-169m-pile,169342464,100,cpu,1488929.0,0.0,-8,0
+4,EleutherAI/pythia-12b,11846072320,100,cpu,33436988.0,0.0,0,0
+5,EleutherAI/gpt-neox-20b,20554567680,100,cpu,59056362.0,0.0,0,0
+6,facebook/opt-13b,12853473280,100,cpu,35645407.0,0.0,8,0
+7,RWKV/rwkv-4-14b-pile,14148597760,100,cpu,40821241.0,0.0,-8,0
