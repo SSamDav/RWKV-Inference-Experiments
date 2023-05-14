@@ -12,7 +12,7 @@ models = [
     "EleutherAI/gpt-neo-125m",
     "facebook/opt-125m",
     "EleutherAI/pythia-12b",
-    "EleutherAI/gpt-neox-20b"
+    "EleutherAI/gpt-neox-20b",
     "facebook/opt-13b"
 ]
 num_tokens = 100
