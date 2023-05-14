@@ -19,7 +19,7 @@ models = [
     "RWKV/rwkv-4-14b-pile"
 ]
 num_tokens = 100
-num_samples = 5
+num_samples = 1
 prompt = '\nIn a shocking finding, scientist discovered a herd of dragons living in a remote, previously unexplored valley, in Tibet. Even more surprising to the researchers was the fact that the dragons spoke perfect Chinese.'
 
 data = []
