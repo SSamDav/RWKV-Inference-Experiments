@@ -40,4 +40,4 @@ for model_name in tqdm(models):
             'total_time': total_time
         })
 
-pd.DataFrame(data).to_csv(DATA_PATH / 'inference_results.csv')
+pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_{device}.csv')
