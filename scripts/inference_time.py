@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 import time
 
-DATA_PATH = Path(__file__).parent / 'data'
+DATA_PATH = Path(__file__).parent / '../data'
 
 devices = ['cpu', 'gpu']
 models = [
