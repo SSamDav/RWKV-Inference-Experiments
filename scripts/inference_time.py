@@ -4,6 +4,8 @@ import pandas as pd
 from torch.profiler import ProfilerActivity, profile, record_function
 from tqdm.auto import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer, RwkvForCausalLM
+import torch
+import gc
 
 DATA_PATH = Path(__file__).parent / '../data'
 
@@ -53,4 +55,7 @@ for device in devices:
             })
 
         del model
+        gc.collect()
+        torch.cuda.empty_cache() 
+
         pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_{device}.csv')
