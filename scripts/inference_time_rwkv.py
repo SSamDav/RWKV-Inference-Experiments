@@ -59,9 +59,12 @@ for strategy in strategies:
         model_size = sum(p.numel() for p in model.parameters())
 
         for tok_idx in range(num_tokens):
+            if state is not None:
+                state = [s.to(strategy.split()[0]) for s in state]
+
             with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], profile_memory=True, record_shapes=False) as prof:
                 with record_function("model_inference"):
-                    output, state = model.forward(next_token, state=[s.to(strategy.split()[0]) for s in state])
+                    output, state = model.forward(next_token, state=state)
 
             full_profile = next(event for event in prof.key_averages() if event.key == 'model_inference')
             next_token = sample(output).cpu()
