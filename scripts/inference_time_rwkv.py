@@ -51,8 +51,7 @@ for strategy in strategies:
 
         # getting the model weights path
         model_weights = sorted(Path(model.split("/")[-1]).glob("*.pth"))[0]
-        import pdb; pdb.set_trace()
-        model = RWKV(model=model_weights.as_posix(), strategy=strategy)
+        model = RWKV(model='./rwkv-4-pile-169m/RWKV-4-Pile-169M-20220807-8023.pth', strategy=strategy)
         model_size = sum(p.numel() for p in model.parameters())
 
         for tok_idx in range(num_tokens):
