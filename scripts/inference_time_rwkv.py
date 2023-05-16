@@ -51,6 +51,7 @@ for strategy in strategies:
 
         # getting the model weights path
         model_weights = sorted(Path(model.split("/")[-1]).glob("*.pth"))[0]
+        import pdb; pdb.set_trace()
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         model_size = sum(p.numel() for p in model.parameters())
 
