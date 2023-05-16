@@ -61,7 +61,7 @@ for strategy in strategies:
         for tok_idx in range(num_tokens):
             with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], profile_memory=True, record_shapes=False) as prof:
                 with record_function("model_inference"):
-                    output, state = model.forward(next_token, state=state)
+                    output, state = model.forward(next_token, state=[s.to(strategy.split()[0]) for s in state])
 
             full_profile = next(event for event in prof.key_averages() if event.key == 'model_inference')
             next_token = sample(output).cpu()
