@@ -54,8 +54,8 @@ for strategy in strategies:
             git("clone", f"https://huggingface.co/{model}")
 
         # getting the model weights path
-        model_weights = sorted(Path(model.split("/")[-1]).glob("*.pth"))[0]
-        model = RWKV(model='./rwkv-4-pile-169m/RWKV-4-Pile-169M-20220807-8023.pth', strategy=strategy)
+        model_weights = sorted(Path(model.split("/")[-1]).glob("RWKV-4-Pile-*.pth"))[0]
+        model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         model_size = sum(p.numel() for p in model.parameters())
 
         for tok_idx in range(num_tokens):
