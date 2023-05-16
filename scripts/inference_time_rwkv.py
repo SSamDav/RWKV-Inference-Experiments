@@ -36,9 +36,18 @@ def sample(outputs):
 strategies = ['cpu fp32', 'cuda fp32']
 models = [
     "BlinkDL/rwkv-4-pile-169m",
+    "BlinkDL/rwkv-4-pile-430m",
     "BlinkDL/rwkv-4-pile-1b5",
     "BlinkDL/rwkv-4-pile-3b"
 ]
+
+model_mapping = {
+    "BlinkDL/rwkv-4-pile-169m": "RWKV-4-Pile-169M-20220807-8023.pth",
+    "BlinkDL/rwkv-4-pile-430m": "RWKV-4-Pile-430M-20220808-8066.pth",
+    "BlinkDL/rwkv-4-pile-1b5": "RWKV-4-Pile-1B5-20220903-8040.pth",
+    "BlinkDL/rwkv-4-pile-3b": "RWKV-4-Pile-3B-20221008-8023.pth",
+}
+
 num_tokens = 100
 num_samples = 1
 prompt = '\nIn a shocking finding, scientist discovered a herd of dragons living in a remote, previously unexplored valley, in Tibet. Even more surprising to the researchers was the fact that the dragons spoke perfect Chinese.'
@@ -54,7 +63,7 @@ for strategy in strategies:
             git("clone", f"https://huggingface.co/{model}")
 
         # getting the model weights path
-        model_weights = sorted(Path(model.split("/")[-1]).glob("RWKV-4-Pile-*.pth"))[-1]
+        model_weights = Path(model.split("/")[-1]) / model_mapping[model]
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         model_size = sum(p.numel() for p in model.parameters())
 
