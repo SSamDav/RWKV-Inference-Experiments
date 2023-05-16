@@ -11,28 +11,23 @@ import gc
 DATA_PATH = Path(__file__).parent / '../data'
 LOGITS_PROCESSOR = LogitsProcessorList()
 
-def process_outputs(input_ids, outputs):
+def sample(outputs):
     next_token_logits = outputs.logits[:, -1, :]
-    next_token_scores = LOGITS_PROCESSOR(input_ids, next_token_logits)
-    probs = nn.functional.softmax(next_token_scores, dim=-1)
+    probs = nn.functional.softmax(next_token_logits, dim=-1)
     next_tokens = torch.multinomial(probs, num_samples=1).squeeze(1)
-    input_ids = torch.cat([input_ids, next_tokens[:, None]], dim=-1)
-    if hasattr(outputs, 'state'):
-        state = outputs.state
-        return input_ids, state
-    
-    return input_ids
+    return next_tokens
 
 devices = ['cpu', 'cuda']
 models = [
     "EleutherAI/pythia-160m",
     "EleutherAI/gpt-neo-125m",
     "facebook/opt-125m",
-    "RWKV/rwkv-4-169m-pile",
-    "EleutherAI/pythia-12b",
-    "EleutherAI/gpt-neox-20b",
-    "facebook/opt-13b",
-    "RWKV/rwkv-4-14b-pile"
+    "EleutherAI/pythia-1.4b",
+    "EleutherAI/gpt-neo-1.3B",
+    "facebook/opt-1.3b",
+    "EleutherAI/pythia-2.8b",
+    "EleutherAI/gpt-neo-2.7B",
+    "facebook/opt-2.7b"
 ]
 num_tokens = 100
 num_samples = 1
@@ -48,30 +43,32 @@ for device in devices:
 
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         tokenized_prompt = tokenizer(prompt, return_tensors="pt")
-        tokenized_prompt = {k: v.to(device) for k, v in tokenized_prompt.items()}
+        tokenized_prompt = tokenized_prompt['input_ids'].to(device)
 
-        for _ in range(num_samples):
+        for tok_idx in range(num_tokens):
             with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], profile_memory=True, record_shapes=False) as prof:
                 with record_function("model_inference"):
-                    tokens = model.generate(**tokenized_prompt, max_new_tokens=num_tokens, do_sample=True)
+                    tokens = model.forward(tokenized_prompt)
 
             full_profile = next(event for event in prof.key_averages() if event.key == 'model_inference')
+            next_tokens = sample(tokens)
+            tokenized_prompt = torch.cat([tokenized_prompt, next_tokens[:, None]], dim=-1)
+            gen_text = tokenizer.decode(tokenized_prompt[0])
             data.append({
                 "model_size": model_size,
                 "token_id": tok_idx,
                 "final_text": gen_text,
-                "strategy": strategy,
+                "strategy": device,
                 "cpu_time": full_profile.cpu_time,
                 "cuda_time": full_profile.cuda_time,
                 "cpu_memory_usage": full_profile.cpu_memory_usage,
                 "cuda_memory_usage": full_profile.cuda_memory_usage,
                 "self_cpu_memory_usage": full_profile.self_cpu_memory_usage,
                 "self_cuda_memory_usage": full_profile.self_cuda_memory_usage
-
             })
 
         del model
         gc.collect()
         torch.cuda.empty_cache() 
 
-        pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_{device}.csv')
+        pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_hf.csv')
