@@ -53,7 +53,7 @@ num_samples = 1
 prompt = '\nIn a shocking finding, scientist discovered a herd of dragons living in a remote, previously unexplored valley, in Tibet. Even more surprising to the researchers was the fact that the dragons spoke perfect Chinese.'
 tokenized_prompt = TOKENIZER.encode(prompt).ids
 
-data, state = [], None
+data = []
 for strategy in strategies:
     tokenized_prompt = torch.tensor(tokenized_prompt)
     next_token = tokenized_prompt
@@ -63,6 +63,7 @@ for strategy in strategies:
             git("clone", f"https://huggingface.co/{model}")
 
         # getting the model weights path
+        state = None
         model_weights = Path(model.split("/")[-1]) / model_mapping[model]
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         model_size = sum(p.numel() for p in model.parameters())
