@@ -58,9 +58,9 @@ for strategy in strategies:
     tokenized_prompt = torch.tensor(tokenized_prompt)
     next_token = tokenized_prompt
     full_text = tokenized_prompt
-    for model in models:
-        if not Path(model.split("/")[-1]).exists():
-            git("clone", f"https://huggingface.co/{model}")
+    for model_name in models:
+        if not Path(model_name.split("/")[-1]).exists():
+            git("clone", f"https://huggingface.co/{model_name}")
 
         # getting the model weights path
         state = None
@@ -81,6 +81,7 @@ for strategy in strategies:
             full_text = torch.cat([full_text, next_token], dim=-1)
             gen_text = TOKENIZER.decode(full_text.tolist())
             data.append({
+                "model_name": model_name,
                 "model_size": model_size,
                 "token_id": tok_idx,
                 "final_text": gen_text,
