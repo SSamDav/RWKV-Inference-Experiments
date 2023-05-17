@@ -63,7 +63,7 @@ for strategy in strategies:
         tokenized_prompt = torch.tensor(tokenized_prompt)
         next_token = tokenized_prompt
         full_text = tokenized_prompt
-        model_weights = Path(model.split("/")[-1]) / model_mapping[model]
+        model_weights = Path(model_name.split("/")[-1]) / model_mapping[model_name]
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         model_size = sum(p.numel() for p in model.parameters())
 
