@@ -55,6 +55,7 @@ for device in devices:
             tokenized_prompt = torch.cat([tokenized_prompt, next_tokens[:, None]], dim=-1)
             gen_text = tokenizer.decode(tokenized_prompt[0])
             data.append({
+                "model_name": model_name,
                 "model_size": model_size,
                 "token_id": tok_idx,
                 "final_text": gen_text,
