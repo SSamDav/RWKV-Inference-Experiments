@@ -55,15 +55,14 @@ tokenized_prompt = TOKENIZER.encode(prompt).ids
 
 data = []
 for strategy in strategies:
-    tokenized_prompt = torch.tensor(tokenized_prompt)
-    next_token = tokenized_prompt
-    full_text = tokenized_prompt
     for model_name in models:
         if not Path(model_name.split("/")[-1]).exists():
             git("clone", f"https://huggingface.co/{model_name}")
 
-        # getting the model weights path
         state = None
+        tokenized_prompt = torch.tensor(tokenized_prompt)
+        next_token = tokenized_prompt
+        full_text = tokenized_prompt
         model_weights = Path(model.split("/")[-1]) / model_mapping[model]
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         model_size = sum(p.numel() for p in model.parameters())
