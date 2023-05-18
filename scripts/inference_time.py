@@ -19,15 +19,31 @@ def sample(outputs):
 
 devices = ['cpu', 'cuda']
 models = [
+    # pythia
     "EleutherAI/pythia-160m",
-    "EleutherAI/gpt-neo-125m",
-    "facebook/opt-125m",
+    "EleutherAI/pythia-410m",
     "EleutherAI/pythia-1.4b",
-    "EleutherAI/gpt-neo-1.3B",
-    "facebook/opt-1.3b",
     "EleutherAI/pythia-2.8b",
+    "EleutherAI/pythia-6.9b",
+    "EleutherAI/pythia-12b",
+
+    # OPT 
+    "facebook/opt-125m",
+    "facebook/opt-350m",
+    "facebook/opt-1.3b",
+    "facebook/opt-2.7b",
+    "facebook/opt-6.7b",
+    "facebook/opt-13b",
+
+    # Bloom
+    "bigscience/bloom-560m",
+    "bigscience/bloom-3b",
+    "bigscience/bloom-1b7",
+
+    # GPT-NEO
+    "EleutherAI/gpt-neo-125m",
+    "EleutherAI/gpt-neo-1.3B",
     "EleutherAI/gpt-neo-2.7B",
-    "facebook/opt-2.7b"
 ]
 num_tokens = 100
 num_samples = 1
