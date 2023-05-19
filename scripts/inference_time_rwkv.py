@@ -71,7 +71,7 @@ for strategy in strategies:
 
         try:
             if not Path(model_name.split("/")[-1]).exists():
-                hf_hub_download(repo_id="model_name", filename=model_mapping[model_name], local_dir=f"./{model_name}")
+                hf_hub_download(repo_id=model_name, filename=model_mapping[model_name], local_dir=f"./{model_name}")
 
             
 
