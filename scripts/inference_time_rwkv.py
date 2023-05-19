@@ -33,7 +33,7 @@ def sample(outputs):
     next_tokens = torch.multinomial(probs, num_samples=1)
     return next_tokens
 
-strategies = ['cpu fp32', 'cuda fp32']
+strategies = ['cpu fp32'] # , 'cuda fp32']
 models = [
     "BlinkDL/rwkv-4-pile-169m",
     "BlinkDL/rwkv-4-pile-430m",
