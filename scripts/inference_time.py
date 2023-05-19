@@ -56,7 +56,7 @@ if (DATA_PATH / 'inference_results_hf.csv').exists() and not recompute_all_model
 
 for device in devices:
     for model_name in tqdm(models):
-
+        print(model_name)
         if any(d["model_name"] == model_name and d["strategy"] == device for d in data): 
             continue
 
@@ -93,11 +93,12 @@ for device in devices:
                     "self_cuda_memory_usage": full_profile.self_cuda_memory_usage
                 })
 
+                pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_hf.csv')
+
             del model
             gc.collect()
             torch.cuda.empty_cache() 
 
-            pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_hf.csv')
 
         except:
             del model
