@@ -18,7 +18,7 @@ def sample(outputs):
     return next_tokens
 
 devices = ['cpu', 'cuda']
-recompute_all_models = True
+recompute_all_models = False
 models = [
     # Bloom
     "bigscience/bloom-560m",
