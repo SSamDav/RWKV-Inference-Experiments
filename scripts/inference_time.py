@@ -48,13 +48,25 @@ models = [
 num_tokens = 100
 num_samples = 1
 prompt = '\nIn a shocking finding, scientist discovered a herd of dragons living in a remote, previously unexplored valley, in Tibet. Even more surprising to the researchers was the fact that the dragons spoke perfect Chinese.'
+df = pd.read_csv(DATA_PATH / f'inference_results_hf.csv')
 
-data = []
+data = df.to_dict('records')
 for device in devices:
     for model_name in tqdm(models):
+
+        if len(df[(df["model_name"] == model_name) & (df["strategy"] == device)]) > 0: 
+            continue
+
         model_cls = AutoModelForCausalLM if 'rwkv' not in model_name.lower() else RwkvForCausalLM
-        model = model_cls.from_pretrained(model_name)
-        model = model.to(device)
+        try:
+            model = model_cls.from_pretrained(model_name)
+            model = model.to(device)
+        except:
+            del model
+            gc.collect()
+            torch.cuda.empty_cache() 
+            continue
+
         model_size = sum(p.numel() for p in model.parameters())
 
         tokenizer = AutoTokenizer.from_pretrained(model_name)
