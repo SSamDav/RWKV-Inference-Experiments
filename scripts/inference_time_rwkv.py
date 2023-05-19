@@ -13,6 +13,7 @@ from rwkv.model import RWKV
 from torch import nn
 from torch.profiler import ProfilerActivity, profile, record_function
 from tokenizers import Tokenizer
+from huggingface_hub import hf_hub_download
 
 DATA_PATH = Path(__file__).parent / '../data'
 DATA_PATH.mkdir(exist_ok=True)
@@ -34,7 +35,7 @@ def sample(outputs):
     return next_tokens
 
 strategies = ['cpu fp32', 'cuda fp32']
-recompute_all_models = True
+recompute_all_models = False
 models = [
     "BlinkDL/rwkv-4-pile-169m",
     "BlinkDL/rwkv-4-pile-430m",
@@ -70,7 +71,9 @@ for strategy in strategies:
 
         try:
             if not Path(model_name.split("/")[-1]).exists():
-                git("clone", f"https://huggingface.co/{model_name}")
+                hf_hub_download(repo_id="model_name", filename=model_mapping[model_name], local_dir=f"./{model_name}")
+
+            
 
             state = None
             tokenized_prompt = torch.tensor(tokenized_prompt)
