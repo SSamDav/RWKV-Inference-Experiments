@@ -14,8 +14,10 @@ from torch import nn
 from torch.profiler import ProfilerActivity, profile, record_function
 from tokenizers import Tokenizer
 from huggingface_hub import hf_hub_download
+import gc
 
-DATA_PATH = Path(__file__).parent / '../data'
+DATA_PATH = Path("") / 'data'
+# DATA_PATH = Path(__file__).parent / 'data'
 DATA_PATH.mkdir(exist_ok=True)
 
 # getting the tokenizer
@@ -34,7 +36,7 @@ def sample(outputs):
     next_tokens = torch.multinomial(probs, num_samples=1)
     return next_tokens
 
-strategies = ['cpu fp32', 'cuda fp32']
+strategies = ['cuda fp32'] # 'cpu fp32', 
 recompute_all_models = False
 models = [
     "BlinkDL/rwkv-4-pile-169m",
@@ -111,6 +113,13 @@ for strategy in strategies:
                 })
 
                 pd.DataFrame(data).to_csv(DATA_PATH / 'inference_results_rwkv.csv')
-        
+
+
         except:
+            print(f"FAILED AT LOADING {model_name}")
+        else: 
+            del model
+            torch.cuda.empty_cache() 
+            gc.collect()
+            torch.cuda.empty_cache() 
             continue
