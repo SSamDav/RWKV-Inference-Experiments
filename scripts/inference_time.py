@@ -17,34 +17,35 @@ def sample(outputs):
     next_tokens = torch.multinomial(probs, num_samples=1).squeeze(1)
     return next_tokens
 
-devices = ['cpu', 'cuda']
+devices = ['cpu']
 recompute_all_models = False
 models = [
     # Bloom
-    "bigscience/bloom-560m",
-    "bigscience/bloom-3b",
-    "bigscience/bloom-1b7",
-
-    # GPT-NEO
     "EleutherAI/gpt-neo-125m",
-    "EleutherAI/gpt-neo-1.3B",
-    "EleutherAI/gpt-neo-2.7B",
-
-    # pythia
+    "facebook/opt-125m",
     "EleutherAI/pythia-160m",
+    "facebook/opt-350m",
     "EleutherAI/pythia-410m",
-    "EleutherAI/pythia-1.4b",
-    "EleutherAI/pythia-2.8b",
-    "EleutherAI/pythia-6.9b",
-    "EleutherAI/pythia-12b",
+    "bigscience/bloom-560m",
 
     # OPT 
-    "facebook/opt-125m",
-    "facebook/opt-350m",
     "facebook/opt-1.3b",
+    "bigscience/bloom-1b7",
+    "EleutherAI/gpt-neo-1.3B",
+    "EleutherAI/pythia-1.4b",
+
+    # GPT-NEO
     "facebook/opt-2.7b",
+    "EleutherAI/gpt-neo-2.7B",
+    "EleutherAI/pythia-2.8b",
+    "bigscience/bloom-3b",
+
+    # pythia
     "facebook/opt-6.7b",
+    "EleutherAI/pythia-6.9b",
     "facebook/opt-13b",
+    "EleutherAI/pythia-12b",
+
 ]
 num_tokens = 1024
 num_samples = 1
@@ -98,6 +99,7 @@ for device in devices:
             del model
             gc.collect()
             torch.cuda.empty_cache() 
+            sleep(5)
 
 
         except:
