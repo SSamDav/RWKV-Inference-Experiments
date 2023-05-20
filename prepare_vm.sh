@@ -8,8 +8,8 @@ bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
 rm -rf ~/miniconda3/miniconda.sh
 # add a conda initialize to your bash
 ~/miniconda3/bin/conda init bash
-exec bash
 
+source ~/.bashrc
 conda create  -y  --name rwkv python=3.10
 conda activate rwkv
 
