@@ -6,7 +6,7 @@ from tqdm.auto import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer, RwkvForCausalLM, LogitsProcessorList
 from torch import nn
 import torch
-from time import sleep  
+from time import sleep
 import gc
 
 DATA_PATH = Path(__file__).parent / '../data'
