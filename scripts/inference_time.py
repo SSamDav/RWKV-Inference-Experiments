@@ -17,7 +17,7 @@ def sample(outputs):
     next_tokens = torch.multinomial(probs, num_samples=1).squeeze(1)
     return next_tokens
 
-devices = ['cpu', 'cuda']
+devices = ['cuda', 'cpu']
 recompute_all_models = False
 models = [
     # Bloom
