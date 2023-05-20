@@ -8,7 +8,9 @@ from torch import nn
 import torch
 import gc
 
-DATA_PATH = Path(__file__).parent / '../data'
+# DATA_PATH = Path(__file__).parent / '../data'
+DATA_PATH = Path("") / 'data'
+
 LOGITS_PROCESSOR = LogitsProcessorList()
 
 def sample(outputs):
@@ -17,7 +19,7 @@ def sample(outputs):
     next_tokens = torch.multinomial(probs, num_samples=1).squeeze(1)
     return next_tokens
 
-devices = ['cuda', 'cpu']
+devices = ['cuda'] # , 'cpu']
 recompute_all_models = False
 models = [
     # Bloom
@@ -95,12 +97,9 @@ for device in devices:
 
                 pd.DataFrame(data).to_csv(DATA_PATH / f'inference_results_hf.csv')
 
-            del model
-            gc.collect()
-            torch.cuda.empty_cache() 
-
-
         except:
+            print(f"FAILED AT LOADING {model_name}")
+        else: 
             del model
             gc.collect()
             torch.cuda.empty_cache() 
