@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 from torch.profiler import ProfilerActivity, profile, record_function
 from tqdm.auto import tqdm
-from transformers import AutoModelForCausalLM, AutoTokenizer, RwkvForCausalLM, LogitsProcessorList
+from transformers import AutoModelForCausalLM, AutoTokenizer, LogitsProcessorList
 from torch import nn
 import torch
 from time import sleep
@@ -21,33 +21,33 @@ def sample(outputs):
     return next_tokens
 
 devices = ['cuda'] # , 'cpu']
-recompute_all_models = False
+recompute_all_models = True
 models = [
     # Bloom
-    "EleutherAI/gpt-neo-125m",
-    "facebook/opt-125m",
-    "EleutherAI/pythia-160m",
-    "facebook/opt-350m",
-    "EleutherAI/pythia-410m",
-    "bigscience/bloom-560m",
+    # "EleutherAI/gpt-neo-125m",
+    # "facebook/opt-125m",
+    # "EleutherAI/pythia-160m",
+    # "facebook/opt-350m",
+    # "EleutherAI/pythia-410m",
+    # "bigscience/bloom-560m",
 
-    # OPT 
-    "facebook/opt-1.3b",
-    "bigscience/bloom-1b7",
-    "EleutherAI/gpt-neo-1.3B",
-    "EleutherAI/pythia-1.4b",
+    # # OPT 
+    # "facebook/opt-1.3b",
+    # "bigscience/bloom-1b7",
+    # "EleutherAI/gpt-neo-1.3B",
+    # "EleutherAI/pythia-1.4b",
 
-    # GPT-NEO
-    "facebook/opt-2.7b",
-    "EleutherAI/gpt-neo-2.7B",
-    "EleutherAI/pythia-2.8b",
-    "bigscience/bloom-3b",
+    # # GPT-NEO
+    # "facebook/opt-2.7b",
+    # "EleutherAI/gpt-neo-2.7B",
+    # "EleutherAI/pythia-2.8b",
+    # "bigscience/bloom-3b",
 
-    # pythia
-    "facebook/opt-6.7b",
-    "EleutherAI/pythia-6.9b",
+    # # pythia
+    # "facebook/opt-6.7b",
+    # "EleutherAI/pythia-6.9b",
     "facebook/opt-13b",
-    "EleutherAI/pythia-12b",
+    # "EleutherAI/pythia-12b",
 
 ]
 num_tokens = 1024
