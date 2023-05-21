@@ -101,8 +101,8 @@ for device in devices:
 
         except:
             print(f"FAILED AT LOADING {model_name}")
-        else: 
-            del model
-            gc.collect()
-            torch.cuda.empty_cache() 
-            continue
+    else: 
+        del model
+        gc.collect()
+        torch.cuda.empty_cache() 
+        continue
