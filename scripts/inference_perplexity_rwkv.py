@@ -6,6 +6,7 @@ from pathlib import Path
 from torch import nn
 import torch.nn.functional as F
 from tqdm.auto import tqdm
+from torchmetrics.text import Perplexity
 
 import requests
 import torch
@@ -18,8 +19,8 @@ models = [
     # "BlinkDL/rwkv-4-pile-430m",
     # "BlinkDL/rwkv-4-pile-1b5",
     "BlinkDL/rwkv-4-pile-3b",
-    "BlinkDL/rwkv-4-pile-7b",
-    "BlinkDL/rwkv-4-pile-14b",
+    # "BlinkDL/rwkv-4-pile-7b",
+    # "BlinkDL/rwkv-4-pile-14b",
 ]
 
 model_mapping = {
@@ -54,6 +55,8 @@ tokenizer = Tokenizer.from_file("20B_tokenizer.json")
 dataset = load_dataset('hoskinson-center/proof-pile', split='train', streaming=True)
 tokenized_dataset = dataset.map(tokenize)
 
+metric = Perplexity(ignore_index=1)
+
 for strategy in strategies:
     for model_name in models:
         processed_name = model_name.split("/")[-1].replace("-", "_")
@@ -78,13 +81,11 @@ for strategy in strategies:
 
                     token_tensor = torch.tensor([previous_token])
                     output, state = model.forward(token_tensor, state=state)
-                    perplexity = calculate_perplexity(output.cpu().unsqueeze(0), torch.tensor([token])).tolist()
-                    fp.write(
-                        json.dumps({
+                    perplexity = metric(output.softmax(-1).cpu().unsqueeze(0).unsqueeze(0), torch.tensor([[token]])).tolist()
+                    json.dump({
                             "context_length": context_length,
                             "perplexity": perplexity
-                        })
-                    )
+                        }, fp)
                     fp.write("\n")
                     
                     previous_token = token
