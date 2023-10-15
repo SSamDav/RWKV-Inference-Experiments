@@ -81,10 +81,10 @@ for strategy in strategies:
 
                     token_tensor = torch.tensor([previous_token])
                     output, state = model.forward(token_tensor, state=state)
-                    perplexity = metric(output.softmax(-1).cpu().unsqueeze(0).unsqueeze(0), torch.tensor([[token]])).tolist()
+                    cross_entropy = F.cross_entropy(output.cpu().unsqueeze(0), torch.tensor([token])).tolist()
                     json.dump({
                             "context_length": context_length,
-                            "perplexity": perplexity
+                            "cross_entropy": cross_entropy
                         }, fp)
                     fp.write("\n")
                     
