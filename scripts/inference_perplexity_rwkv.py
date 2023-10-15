@@ -85,6 +85,7 @@ for strategy in strategies:
                             "perplexity": perplexity
                         })
                     )
+                    fp.write("\n")
                     
                     previous_token = token
                     context_length += 1
