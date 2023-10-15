@@ -66,8 +66,8 @@ for strategy in strategies:
         with open(f"perplexity_by_context_{processed_name}.jsonl", "w") as fp:
             state, previous_token, context_length = None, None, 0
             for doc_id, doc in enumerate(tokenized_dataset):
-                if doc_id >= 10: break
-                for token in tqdm(doc["ids"], leave=True):
+                if context_length >= 128000: break
+                for token in tqdm(doc["ids"], leave=True, desc=f"Model: {model_name}, DocId: {doc_id}"):
                     if previous_token is None:
                         previous_token = token
                         context_length += 1
@@ -88,6 +88,3 @@ for strategy in strategies:
                     
                     previous_token = token
                     context_length += 1
-
-        break
-    break
