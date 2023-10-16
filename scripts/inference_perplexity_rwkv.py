@@ -64,9 +64,11 @@ for strategy in strategies:
         model_weights = Path(model_name) / model_mapping[model_name]
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         with torch.no_grad():
-            with open(f"perplexity_by_context_{processed_name}.jsonl", "w") as fp:
-                for doc_id, doc in enumerate(tokenized_dataset):
-                    if doc_id >= 10: break
+            for doc_id, doc in enumerate(tokenized_dataset):
+                if doc_id >= 10: break
+                if doc_id == 0: continue
+                
+                with open(f"perplexity_by_context_{processed_name}_docid_{doc_id}.jsonl", "w") as fp:
 
                     state, previous_token = None, None
                     for token_id, token in enumerate(tqdm(doc["ids"], leave=True)):
