@@ -17,8 +17,8 @@ models = [
     # "BlinkDL/rwkv-4-pile-430m",
     # "BlinkDL/rwkv-4-pile-1b5",
     # "BlinkDL/rwkv-4-pile-3b",
-    # "BlinkDL/rwkv-4-pile-7b",
-    "BlinkDL/rwkv-4-pile-14b",
+    "BlinkDL/rwkv-4-pile-7b",
+    # "BlinkDL/rwkv-4-pile-14b",
 ]
 
 model_mapping = {
@@ -34,7 +34,7 @@ model_mapping = {
 
 def tokenize(example):
     ids = tokenizer.encode(example["text"]).ids
-    return {"ids": ids[:128000], "length": len(ids)}
+    return {"ids": ids[:32000], "length": len(ids)}
 
 
 def calculate_perplexity(logits, targets):
@@ -65,7 +65,7 @@ for strategy in strategies:
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         with torch.no_grad():
             for doc_id, doc in enumerate(tokenized_dataset):
-                if doc_id >= 5: break
+                if doc_id >= 10: break
                 
                 with open(f"perplexity_by_context_{processed_name}_docid_{doc_id}.jsonl", "w") as fp:
 
