@@ -17,7 +17,7 @@ models = [
     # "BlinkDL/rwkv-4-pile-430m",
     # "BlinkDL/rwkv-4-pile-1b5",
     # "BlinkDL/rwkv-4-pile-3b",
-    "BlinkDL/rwkv-4-pile-7b",
+    # "BlinkDL/rwkv-4-pile-7b",
     "BlinkDL/rwkv-4-pile-14b",
 ]
 
@@ -51,7 +51,7 @@ with open("20B_tokenizer.json", "w") as fp:
 tokenizer = Tokenizer.from_file("20B_tokenizer.json")
 
 # Loading Dataset
-dataset = load_dataset('hoskinson-center/proof-pile', split='train', streaming=True)
+dataset = load_dataset('hoskinson-center/proof-pile', split='test', streaming=True)
 tokenized_dataset = dataset.map(tokenize).filter(lambda example: example['length'] >= 128000)
 
 
@@ -65,8 +65,7 @@ for strategy in strategies:
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         with torch.no_grad():
             for doc_id, doc in enumerate(tokenized_dataset):
-                if doc_id >= 10: break
-                if doc_id == 0: continue
+                if doc_id >= 5: break
                 
                 with open(f"perplexity_by_context_{processed_name}_docid_{doc_id}.jsonl", "w") as fp:
 
