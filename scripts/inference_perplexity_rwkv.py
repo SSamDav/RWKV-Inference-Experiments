@@ -17,9 +17,9 @@ models = [
     # "BlinkDL/rwkv-4-pile-430m",
     # "BlinkDL/rwkv-4-pile-1b5",
     # "BlinkDL/rwkv-4-pile-3b",
-    # "BlinkDL/rwkv-4-pile-7b",
-    "xiaol/RWKV-claude-4-World-7B-65k",
-    # "BlinkDL/rwkv-4-pile-14b",
+    "BlinkDL/rwkv-4-pile-7b",
+    # "xiaol/RWKV-claude-4-World-7B-65k",
+    "BlinkDL/rwkv-4-pile-14b",
 ]
 
 model_mapping = {
@@ -67,7 +67,7 @@ for strategy in strategies:
         model = RWKV(model=model_weights.as_posix(), strategy=strategy)
         with torch.no_grad():
             for doc_id, doc in enumerate(tokenized_dataset):
-                if doc_id >= 1: break
+                if doc_id >= 10: break
                 
                 with open(f"perplexity_by_context_{processed_name}_docid_{doc_id}.jsonl", "w") as fp:
 
