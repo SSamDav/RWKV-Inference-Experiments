@@ -47,7 +47,7 @@ def compute_window_perplexity(model, input, context_size):
         end_loc = min(begin_loc + context_size, seq_len)
         trg_len = end_loc - prev_end_loc
         input_ids = input[begin_loc:end_loc]
-        
+        state = None
         for token_id, token in enumerate(input_ids):
             if token_id == 0:
                 previous_token = token
