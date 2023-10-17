@@ -39,17 +39,11 @@ def tokenize(example):
     return {"ids": ids[:128000], "length": len(ids)}
 
 
-def calculate_perplexity(logits, targets):
-    loss = F.cross_entropy(logits, targets)
-    perplexity = torch.exp(loss)
-    return perplexity
-
-
 def compute_window_perplexity(model, input, context_size):
     seq_len = len(input)
     prev_end_loc = 0 
     nlls = []
-    for begin_loc in range(0, seq_len, 256):
+    for begin_loc in tqdm(list(range(0, seq_len, 256)), leave=False, desc=f"Ctx: {context_size}"):
         end_loc = min(begin_loc + context_size, seq_len)
         trg_len = end_loc - prev_end_loc
         input_ids = input[begin_loc:end_loc]
@@ -102,7 +96,7 @@ for strategy in strategies:
                 
                 with open(f"perplexity_by_context_{processed_name}_docid_{doc_id}.jsonl", "w") as fp:
                     for ctx_size in range(2048, 128000, 2048):
-                        perplexity = calculate_perplexity(model, doc["ids"], ctx_size)  
+                        perplexity = compute_window_perplexity(model, doc["ids"], ctx_size)  
                         json.dump(
                             {
                                 "context_length": ctx_size,
