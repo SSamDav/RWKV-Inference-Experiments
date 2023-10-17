@@ -46,27 +46,18 @@ def compute_window_perplexity(model, input, context_size):
     for begin_loc in tqdm(list(range(0, seq_len, 256)), leave=False, desc=f"Ctx: {context_size}"):
         end_loc = min(begin_loc + context_size, seq_len)
         trg_len = end_loc - prev_end_loc
-        input_ids = input[begin_loc:end_loc]
+        window_ids = input[begin_loc:end_loc]
         state = None
         
         window_loss = []
-        for token_id, token in enumerate(input_ids):
-            if token_id == 0:
-                previous_token = token
-                continue
-
-            if state is not None:
-                state = [s.to(strategy.split()[0]) for s in state]
-
-            token_tensor = torch.tensor([previous_token])
-            output, state = model.forward(token_tensor, state=state)
-            previous_token = token
+        inputs_ids = torch.tensor(window_ids[:-trg_len])
+        target_ids = torch.tensor(window_ids[-trg_len:])
+        output, state = model.forward(inputs_ids, state=state)
+        for token_id in target_ids:
+            window_loss.append(F.cross_entropy(output.cpu(), torch.tensor([token_id])).tolist())
+            output, state = model.forward(token_id.unsqueeze(0), state=state)
             
-            if token_id >= len(input_ids) - trg_len:
-                window_loss.append(F.cross_entropy(output.unsqueeze(0), torch.tensor([token])).tolist())
-                
-        else:
-            nlls.append(torch.stack(window_loss).mean().float())
+        nlls.append(torch.stack(window_loss).mean().float())
         
         prev_end_loc = end_loc
         if end_loc == seq_len:
