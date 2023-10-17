@@ -13,11 +13,11 @@ import json
 
 strategies = ['cuda fp32'] # 'cpu fp32', 
 models = [
-    "BlinkDL/rwkv-4-pile-169m",
+    # "BlinkDL/rwkv-4-pile-169m",
     # "BlinkDL/rwkv-4-pile-430m",
     # "BlinkDL/rwkv-4-pile-1b5",
     # "BlinkDL/rwkv-4-pile-3b",
-    # "BlinkDL/rwkv-4-pile-7b",
+    "BlinkDL/rwkv-4-pile-7b",
     # "xiaol/RWKV-claude-4-World-7B-65k",
     # "BlinkDL/rwkv-4-pile-14b",
 ]
