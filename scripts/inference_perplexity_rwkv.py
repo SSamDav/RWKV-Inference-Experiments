@@ -47,14 +47,13 @@ def compute_window_perplexity(model, input, context_size):
         end_loc = min(begin_loc + context_size, seq_len)
         trg_len = end_loc - prev_end_loc
         window_ids = input[begin_loc:end_loc]
-        state = None
         
         window_loss = []
         inputs_ids = torch.tensor(window_ids[:-trg_len])
         target_ids = torch.tensor(window_ids[-trg_len:])
-        output, state = model.forward(inputs_ids, state=state)
+        output, state = model.forward(inputs_ids, state=None)
         for token_id in target_ids:
-            window_loss.append(F.cross_entropy(output.cpu(), torch.tensor([token_id])).tolist())
+            window_loss.append(F.cross_entropy(output.cpu().unsqueeze(0), torch.tensor([token_id])).tolist())
             output, state = model.forward(token_id.unsqueeze(0), state=state)
             
         nlls.append(torch.stack(window_loss).mean().float())
