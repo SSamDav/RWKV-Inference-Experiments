@@ -9,7 +9,10 @@ from tqdm.auto import tqdm
 import requests
 import torch
 import json
+import os
 
+os.environ["RWKV_JIT_ON"] = '1'
+os.environ["RWKV_CUDA_ON"] = '1'
 
 strategies = ['cuda fp32'] # 'cpu fp32', 
 models = [
