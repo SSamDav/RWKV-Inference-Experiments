@@ -96,7 +96,7 @@ for strategy in strategies:
             for doc_id, doc in enumerate(tokenized_dataset):
                 if doc_id >= 5: break
                 if doc_id <= 1: 
-                    tqdm.update(1)
+                    pbar.update(1)
                     continue
                 
                 with open(f"perplexity_by_context_{processed_name}_docid_{doc_id}.jsonl", "w") as fp:
