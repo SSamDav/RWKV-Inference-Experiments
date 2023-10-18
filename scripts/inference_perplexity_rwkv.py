@@ -57,7 +57,15 @@ def compute_window_perplexity(model, input, context_size):
         inputs_ids = torch.tensor(window_ids[:-trg_len])
         target_ids = torch.tensor(window_ids[-trg_len:])
         if len(inputs_ids) > 0:
-            output, state = model.forward(inputs_ids, state=None)
+            state = None
+            n_blocks = int(len(inputs_ids) / 12288) + (len(inputs_ids) % 12288 > 0)
+            for i in range(n_blocks):
+                start_idx = i*12288
+                end_idx = min(start_idx + 12288, len(inputs_ids))
+                input_block = inputs_ids[start_idx:end_idx]
+                output, state = model.forward(input_block, state=state)
+            
+            
             for token_id in target_ids:
                 window_loss.append(F.cross_entropy(output.cpu().unsqueeze(0), torch.tensor([token_id])).tolist())
                 output, state = model.forward(token_id.unsqueeze(0), state=state)
@@ -94,13 +102,13 @@ for strategy in strategies:
         pbar = tqdm(total=5)
         with torch.no_grad():
             for doc_id, doc in enumerate(tokenized_dataset):
-                if doc_id >= 5: break
-                if doc_id <= 1: 
-                    pbar.update(1)
-                    continue
+                if doc_id >= 1: break
+                # if doc_id <= 1: 
+                #     pbar.update(1)
+                #     continue
                 
                 with open(f"perplexity_by_context_{processed_name}_docid_{doc_id}.jsonl", "w") as fp:
-                    for ctx_size in range(2048, 128000, 2048):
+                    for ctx_size in range(14336, 128000, 2048):
                         perplexity = compute_window_perplexity(model, doc["ids"], ctx_size)  
                         json.dump(
                             {
