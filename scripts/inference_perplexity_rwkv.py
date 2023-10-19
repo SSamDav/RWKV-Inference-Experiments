@@ -103,12 +103,12 @@ for strategy in strategies:
         with torch.no_grad():
             for doc_id, doc in enumerate(tokenized_dataset):
                 if doc_id >= 1: break
-                # if doc_id <= 1: 
-                #     pbar.update(1)
-                #     continue
+                if doc_id <= 1: 
+                    pbar.update(1)
+                    continue
                 
                 with open(f"perplexity_by_context_{processed_name}_docid_{doc_id}.jsonl", "w") as fp:
-                    for ctx_size in range(14336, 128000, 2048):
+                    for ctx_size in range(12288, 128000, 2048):
                         perplexity = compute_window_perplexity(model, doc["ids"], ctx_size)  
                         json.dump(
                             {
