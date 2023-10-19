@@ -102,7 +102,7 @@ for strategy in strategies:
         pbar = tqdm(total=5)
         with torch.no_grad():
             for doc_id, doc in enumerate(tokenized_dataset):
-                if doc_id >= 1: break
+                if doc_id >= 3: break
                 if doc_id <= 1: 
                     pbar.update(1)
                     continue
